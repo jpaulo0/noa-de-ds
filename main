@@ -281,3 +281,79 @@ public class PessoaDAO {
     }
 }
 
+
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class Database {
+    private static final String URL = "jdbc:sqlite:agenda.db";
+    
+    public static void init() {
+        try (Connection conn = connect(); Statement stmt = conn.createStatement()) {
+            String sql = "CREATE TABLE IF NOT EXISTS pessoas (" +
+                        "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        "nome TEXT NOT NULL," +
+                        "telefone TEXT," +
+                        "email TEXT" +
+                        ");";
+            stmt.execute(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static Connection connect() {
+        Connection conn = null;
+        try {
+            conn = DriverManager.getConnection(URL);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return conn;
+    }
+}
+import javafx.geometry.Pos;
+import javafx.event.EventHandler;
+import javafx.event.ActionEvent;
+
+public class Main extends Application 
+{ 
+  
+  @Override
+  public void start(Stage primaryStage) {
+    
+    Label label; 
+    TextField tf;
+    Button button;
+    VBox vbox;
+    Scene scene;
+    
+    tf = new TextField("Text Field!");
+    tf.setMaxWidth(200);
+
+    label = new Label("Type text and click the button");
+    button = new Button("Click"); 
+
+    button.setOnAction(new EventHandler<ActionEvent>() {
+      @Override public void handle(ActionEvent e) {
+        label.setText(tf.getText());
+      }
+    });
+
+    vbox = new VBox(label, tf, button);
+    vbox.setSpacing(20);
+    vbox.setAlignment(Pos.CENTER);
+    scene = new Scene(vbox, 300, 200);
+    
+    primaryStage.setTitle("A Simple Scene!");
+    primaryStage.setScene(scene);
+    primaryStage.show();
+  } 
+    
+  public static void main(String[] args) {
+    launch(args);
+  }
+} 
